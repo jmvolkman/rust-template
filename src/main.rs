@@ -25,7 +25,7 @@ fn main() {
 
    // let new_shapes = vec![Shape::Circle(5.0), Shape::Triangle(1.0, 1.0), Shape::Square(3.0)];
 
-    println!("Biggest Shape {:#?}", big_shape(&hapes));
+    println!("Biggest Shape {:#?}", big_shape(&shapes));
 
     println!("Total area: {} sq. units", total_area);
     
