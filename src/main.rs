@@ -12,6 +12,8 @@ fn main() {
 
     println!("Hello, JMV!");
 
+    println!("Local Mac version?!");
+
     //file_main();
     //error_main();
     //name_main();
