@@ -1,19 +1,16 @@
-use std::env;
-use std::hash::BuildHasher;
-use std::vec;
-use std::fs;
-use std::fs::File;
-use std::io;
-use std::io::{BufRead, BufReader};
-use std::io::{Error, Read, Write};
-use std::path::PathBuf;
+
 
 fn main() {
 
     println!("Hello, JMV!");
 
+    println!("Please enter number of elements to sum:");
+    let count:i32 = my_library::input_number();
+    println!("Item Count: {}", count);
+
     println!("Local Mac version?!");
 
+    arg_fn();
     //file_main();
     //error_main();
     //name_main();
@@ -27,7 +24,7 @@ fn main() {
     //file_create_read();
     //read_file_error();
     //borrow_main();
-    //arg_fn();
+    arg_fn();
     //number_test();
     //condition();
     // array_test();
@@ -156,44 +153,6 @@ fn filesize_main() {
     // let result = format_size(6880088373000099);
     // println!("{}", result);
     // println!("{}", format_byte(FileSize::Kilobytes(2500)));
-}
-
-#[allow(dead_code)]
-fn read_file_contents(path: PathBuf) -> Result<String, Error> {
-    let mut string = String::new();
-
-    // Access a file at a specified path
-    // ---------------------------------
-    // TODO #1:
-    // - Pass variable to `file` variable on success, or
-    // - Return from function early if there's an error
-    let mut file: File = match File::open(path) {
-        Ok(file_handle) => file_handle,
-        Err(io_error) =>  return Err(io_error),
-    };
-
-    // Read file contents into `String` variable with `read_to_string`
-    // ---------------------------------
-    // Success path is already filled in
-    // TODO #2: Return from function early if there's an error
-    match file.read_to_string(&mut string) {
-        Ok(_) => (),
-        Err(io_error) => return Err(io_error),
-    };
-
-    // TODO #3: Return `string` variable as expected by function signature
-    Ok(string)
-
-}
-
-#[allow(dead_code)]
-fn file_main() {
-    if read_file_contents(PathBuf::from("src/main.rs")).is_ok() {
-        println!("The program found the main file.");
-    }
-    if read_file_contents(PathBuf::from("non-existent-file.txt")).is_err() {
-        println!("The program reported an error for the file that doesn't exist.");
-    }
 }
 
 #[derive(Debug)]
@@ -647,48 +606,6 @@ fn person_main(){
     });
 }
 
-pub fn input_number() -> i32 {
-        let mut input = String::new();
-        io::stdin().read_line(&mut input).expect("Error in reading.");
-        //input.trim().parse().expect("parse error")
-        let value = match input.trim().parse::<i32>() { 
-            Ok(n) => n,
-            Err(error) => {
-                match error.kind() {
-                    // Error::ParseInt(e) => e,
-    
-                    std::num::IntErrorKind::Empty => {panic!("Input not a number: {} - Empty Error: {}", input, error)}
-                    std::num::IntErrorKind::InvalidDigit => {panic!("Input not a number: {} - Invalid Error: {}", input, error)}
-                    std::num::IntErrorKind::PosOverflow => {panic!("Input not a number: {} - Large Error: {}", input, error)}
-                    std::num::IntErrorKind::NegOverflow => {panic!("Input not a number: {} - Small Error: {}", input, error)}
-                    std::num::IntErrorKind::Zero => {panic!("Input not a number: {} - Zero Error: {}", input, error)} 
-                    _ => {panic!("Input not a number: {} - Error: {}", input, error)}
-                }
-            }
-        };
-        value
- }
- pub fn input_string() -> String {
-    let mut input = String::new();
-    io::stdin().read_line(&mut input).expect("Error in reading.");
-    //input.trim().parse().expect("parse error")
-    //let value: String = match input.trim().parse::<String>() {
-    //     Ok(n) => n,
-    //    Err(error) => {
-    //        match error.kindof() {
-    //            // Error::ParseInt(e) => e,
-//
-    //            std::num::IntErrorKind::Empty => {panic!("Input not a number: {} - Empty Error: {}", input, error)}
-    //            std::num::IntErrorKind::InvalidDigit => {panic!("Input not a number: {} - Invalid Error: {}", input, error)}
-    //            std::num::IntErrorKind::PosOverflow => {panic!("Input not a number: {} - Large Error: {}", input, error)}
-    //            std::num::IntErrorKind::NegOverflow => {panic!("Input not a number: {} - Small Error: {}", input, error)}
-    //            std::num::IntErrorKind::Zero => {panic!("Input not a number: {} - Zero Error: {}", input, error)} 
-    //            _ => {panic!("Input not a number: {} - Error: {}", input, error)}
-    //        }
-    //    }
-    //};
-    input.trim().to_string()
-}
 
 
 #[allow(dead_code)]
@@ -716,147 +633,6 @@ fn file_create_read(){
     println!("read_with_bufreader_vec(): {:?}", bufreader_vec);
 
 
-}
-
-pub fn create_file_write_all(file_path: &str, content: &[u8]){
-
-    let mut file = match fs::File::create(file_path) {
-        Ok(file) => file,
-        Err(why) => panic!("couldn't create {}: {}", file_path, why),
-    
-    };
-    //file.write_all(content).unwrap();
-    match file.write_all(content) {
-        Err(why) => panic!("couldn't write to {}: {}", file_path, why),
-        Ok(_) => println!("successfully wrote to {}", file_path),
-    }
-}
-pub fn create_file_write(file_path: &str, msg: &[u8]){ 
-    match fs::write(file_path, msg) {
-        Err(why) => panic!("couldn't write to {}: {}", file_path, why),
-        Ok(_) => println!("successfully wrote to {}", file_path),
-    }
-    //fs::write(file_path, msg).unwrap(); 
-}
-// READ ENTIRE FILE INTO A STRING
-pub fn read_file_string(read_path: &str) -> Result<String,  std::io::Error> {
-    //let mut file = File::open(read_path).unwrap();
-    let mut file = match File::open(read_path)  {
-        Ok(file) => file,
-        Err(error) => {
-            match error.kind() {
-                std::io::ErrorKind::NotFound => {
-                    panic!("File not found: {}", error)
-                }
-                _ => {
-                    panic!("Error opening file: {}", error)
-                }
-            }
-        }
-    };
-    let mut file_contents = String::new();
-    file.read_to_string(&mut file_contents).unwrap();
-    Ok(file_contents)
-}
-// READ ENTIRE FILE INTO A BYTES VECTOR
-pub fn read_file_vec(read_path: &str) -> Result<Vec<u8>,  std::io::Error>{
-    //let mut file = File::open(read_path)?;
-
-    let mut file = match File::open(read_path)  {
-        Ok(file) => file,
-        Err(error) => {
-            match error.kind() {
-                std::io::ErrorKind::NotFound => {
-                    panic!("File not found: {}", error)
-                }
-                _ => {
-                    panic!("Error opening file: {}", error)
-                }
-            }
-        }
-    };
-    let mut data = vec![];
-    file.read_to_end(&mut data).unwrap();
-    Ok(data)
-}
-// READ USING BufReader INTO STRING
-pub fn read_with_bufreader_str(read_path: &str) -> Result<String,  std::io::Error> {
-    //let file = File::open(read_path).unwrap();
-
-    let file = match File::open(read_path)  {
-        Ok(file) => file,
-        Err(error) => {
-            match error.kind() {
-                std::io::ErrorKind::NotFound => {
-                    panic!("File not found: {}", error)
-                }
-                _ => {
-                    panic!("Error opening file: {}", error)
-                }
-            }
-        }
-    };
-    let mut buf_reader = BufReader::new(file);
-    let mut file_contents = String::new();
-    buf_reader.read_to_string(&mut file_contents).unwrap();
-    Ok(file_contents)
-}
-// READ USING BufReader INTO VECTOR
-pub fn read_with_bufreader_vec(read_path: &str) -> Result<Vec<u8>,  std::io::Error> {
-    //let file = File::open(read_path).unwrap();
-
-    let file = match File::open(read_path)  {
-        Ok(file) => file,
-        Err(error) => {
-            match error.kind() {
-                std::io::ErrorKind::NotFound => {
-                    panic!("File not found: {}", error)
-                }
-                _ => {
-                    panic!("Error opening file: {}", error)
-                }
-            }
-        }
-    };
-    let mut buf_reader = BufReader::new(file);
-    let mut data = vec![];
-    buf_reader.read_to_end(&mut data).unwrap();
-    Ok(data)
-}
-
-#[allow(dead_code)]
-fn read_file_error(){
-    let file: Result<File, io::Error> = File::open("non_existent_file.txt");
-    let file = match file {
-        Ok(file) => file,
-        Err(error) => {
-            match error.kind() {
-                std::io::ErrorKind::NotFound => {
-                    panic!("File not found: {}", error)
-                }
-                _ => {
-                    panic!("Error opening file: {}", error)
-                }
-            }
-        }
-    };
-    
-    let reader = BufReader::new(file);
-    for line in reader.lines() {
-        match line {
-            Ok(line) => println!("{}", line),
-            Err(error) => {
-                match error.kind() {
-                    std::io::ErrorKind::PermissionDenied => {
-                        println!("Permission denied: {}", error) 
-                    }
-                    _ => {
-                        panic!("Error reading line: {}", error)
-                    }
-                }
-            }
-        }
-    }
 }
 
 #[allow(dead_code)]
@@ -931,9 +707,9 @@ fn own_string(s: String) {
 #[allow(dead_code)]
 fn arg_fn(){
     println!("Please enter number of elements to sum:");
-    let count:i32 = input_number();
+    let count:i32 = my_library::input_number();
     println!("Item Count: {}", count);
-
+    
     let mut total = 0;
     let mut items: Vec<i32> = Vec::new();
     if count > 0 {

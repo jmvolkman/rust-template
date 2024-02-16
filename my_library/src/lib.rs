@@ -1,3 +1,9 @@
+use std::fs;
+use std::fs::File;
+use std::io;
+use std::io::{BufRead, BufReader};
+use std::io::{Error, Read, Write};
+
 pub fn input_string() -> String {
     let mut input = String::new();
     io::stdin().read_line(&mut input).expect("Error in reading.");
@@ -131,6 +137,82 @@ pub fn read_with_bufreader_vec(read_path: &str) -> Result<Vec<u8>,  std::io::Err
     Ok(data)
 }
 
+fn read_file_contents(path: PathBuf) -> Result<String, Error> {
+    let mut string = String::new();
+
+    // Access a file at a specified path
+    // ---------------------------------
+    // TODO #1:
+    // - Pass variable to `file` variable on success, or
+    // - Return from function early if there's an error
+    let mut file: File = match File::open(path) {
+        Ok(file_handle) => file_handle,
+        Err(io_error) =>  return Err(io_error),
+    };
+
+    // Read file contents into `String` variable with `read_to_string`
+    // ---------------------------------
+    // Success path is already filled in
+    // TODO #2: Return from function early if there's an error
+    match file.read_to_string(&mut string) {
+        Ok(_) => (),
+        Err(io_error) => return Err(io_error),
+    };
+
+    // TODO #3: Return `string` variable as expected by function signature
+    Ok(string)
+
+}
+fn read_file_error(){
+    let file: Result<File, io::Error> = File::open("non_existent_file.txt");
+    let file = match file {
+        Ok(file) => file,
+        Err(error) => {
+            match error.kind() {
+                std::io::ErrorKind::NotFound => {
+                    panic!("File not found: {}", error)
+                }
+                _ => {
+                    panic!("Error opening file: {}", error)
+                }
+            }
+        }
+    };
+    
+    let reader = BufReader::new(file);
+    for line in reader.lines() {
+        match line {
+            Ok(line) => println!("{}", line),
+            Err(error) => {
+                match error.kind() {
+                    std::io::ErrorKind::PermissionDenied => {
+                        println!("Permission denied: {}", error) 
+                    }
+                    _ => {
+                        panic!("Error reading line: {}", error)
+                    }
+                }
+            }
+        }
+    }
+}
+
+
+
+// Rust code for creating a library
+pub fn public_function() {
+    println!("Inside public function");
+}
+
+fn pvt_func() {
+    println!("Calling pvt function");
+}
+
+pub fn indirect_fn_access() {
+    print!("Accessing indirect functions ");
+
+    pvt_func();
+}
 
 //pre-built examples
 pub fn add(left: usize, right: usize) -> usize {
@@ -147,3 +229,4 @@ mod tests {
         assert_eq!(result, 4);
     }
 }
+
