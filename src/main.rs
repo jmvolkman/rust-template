@@ -1,3 +1,5 @@
+use std::io;
+
 
 
 fn main() {
@@ -135,7 +137,7 @@ fn format_byte(byte_type:FileSize) -> String {
 fn filesize_main() {
 
         println!("Size is: ");
-    let input : String = input_string();
+    let input : String = my_library::input_string();
     let args = input.split(' ').collect::<Vec<&str>>();
 
     println!("Vector: {:?}",args);
@@ -615,21 +617,21 @@ fn file_create_read(){
     let msg_write: &[u8; 19] = b"Hello from write()!";
     let file_to_read: &str = "./example.txt";
     // Create file using the write_all() method
-    create_file_write_all(file_to_read, msg_write_all);
+    my_library::create_file_write_all(file_to_read, msg_write_all);
     // Create file using the write()
-    create_file_write(file_to_read, msg_write);
+    my_library::create_file_write(file_to_read, msg_write);
     // Reading a file to a string
-    let file_string_contents =  read_file_string(file_to_read).unwrap();
+    let file_string_contents =  my_library::read_file_string(file_to_read).unwrap();
     println!("read_file_string(): {:?}", file_string_contents);
     // Reading a file to a vector
-    let file_vec_contents = read_file_vec(file_to_read).unwrap();
+    let file_vec_contents = my_library::read_file_vec(file_to_read).unwrap();
     println!("read_file_string_vec(): {:?}", file_vec_contents);
     // Reading a file to a string using a Buffered Reader
     // let bufreader_str = mods::file_mod::reading_files::read_with_bufreader_str(file_to_read).unwrap();
-    let bufreader_str = read_with_bufreader_str(file_to_read).unwrap();
+    let bufreader_str = my_library::read_with_bufreader_str(file_to_read).unwrap();
     println!("read_with_bufreader_str(): {:?}", bufreader_str);
     // Reading a file to a vector using a Buffered Reader
-    let bufreader_vec = read_with_bufreader_vec(file_to_read).unwrap();
+    let bufreader_vec = my_library::read_with_bufreader_vec(file_to_read).unwrap();
     println!("read_with_bufreader_vec(): {:?}", bufreader_vec);
 
 
@@ -715,7 +717,7 @@ fn arg_fn(){
     if count > 0 {
         for int_loop in 1..=count {
             println!("Entry {}: ", int_loop);
-            let entry:i32 = input_number();
+            let entry:i32 = my_library::input_number();
             items.push(entry);
             //io::stdin().read_line(&mut input).expect("Failed to read input");
             println!("Entered: {}", entry);

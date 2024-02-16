@@ -3,13 +3,13 @@ use std::fs::File;
 use std::io;
 use std::io::{BufRead, BufReader};
 use std::io::{Error, Read, Write};
+use std::path::PathBuf;
 
 pub fn input_string() -> String {
     let mut input = String::new();
     io::stdin().read_line(&mut input).expect("Error in reading.");
     input.trim().to_string()
-}
-    
+}    
 pub fn input_number() -> i32 {
     let mut input = String::new();
     io::stdin().read_line(&mut input).expect("Error in reading.");
@@ -137,7 +137,7 @@ pub fn read_with_bufreader_vec(read_path: &str) -> Result<Vec<u8>,  std::io::Err
     Ok(data)
 }
 
-fn read_file_contents(path: PathBuf) -> Result<String, Error> {
+pub fn read_file_contents(path: PathBuf) -> Result<String, Error> {
     let mut string = String::new();
 
     // Access a file at a specified path
@@ -163,7 +163,7 @@ fn read_file_contents(path: PathBuf) -> Result<String, Error> {
     Ok(string)
 
 }
-fn read_file_error(){
+pub fn read_file_error(){
     let file: Result<File, io::Error> = File::open("non_existent_file.txt");
     let file = match file {
         Ok(file) => file,
