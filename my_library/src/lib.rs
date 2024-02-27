@@ -5,6 +5,10 @@ use std::io::{BufRead, BufReader};
 use std::io::{Error, Read, Write};
 use std::path::PathBuf;
 
+pub mod config;
+
+pub mod colors;
+
 pub fn input_string() -> String {
     let mut input = String::new();
     io::stdin().read_line(&mut input).expect("Error in reading.");
